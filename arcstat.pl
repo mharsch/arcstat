@@ -39,40 +39,40 @@ use Getopt::Long;
 use IO::Handle;
 
 my %cols = (# HDR => [Size, Description]
-	"Time"	=>[8, "Time"],
-	"hits"	=>[4, "Arc reads per second"],
-	"miss"	=>[4, "Arc misses per second"],
-	"read"	=>[4, "Total Arc accesses per second"],
-	"Hit%"	=>[4, "Arc Hit percentage"],
-	"miss%"	=>[5, "Arc miss percentage"],
-	"dhit"	=>[4, "Demand Data hits per second"],
-	"dmis"	=>[4, "Demand Data misses per second"],
-	"dh%"	=>[3, "Demand Data hit percentage"],
-	"dm%"	=>[3, "Demand Data miss percentage"],
-	"phit"	=>[4, "Prefetch hits per second"],
-	"pmis"	=>[4, "Prefetch misses per second"],
-	"ph%"	=>[3, "Prefetch hits percentage"],
-	"pm%"	=>[3, "Prefetch miss percentage"],
-	"mhit"	=>[4, "Metadata hits per second"],
-	"mmis"	=>[4, "Metadata misses per second"],
-	"mread"	=>[5, "Metadata accesses per second"],
-	"mh%"	=>[3, "Metadata hit percentage"],
-	"mm%"	=>[3, "Metadata miss percentage"],
-	"arcsz"	=>[5, "Arc Size"],
-	"c" 	=>[4, "Arc Target Size"],
-	"mfu" 	=>[4, "MFU List hits per second"],
-	"mru" 	=>[4, "MRU List hits per second"],
-	"mfug" 	=>[4, "MFU Ghost List hits per second"],
-	"mrug" 	=>[4, "MRU Ghost List hits per second"],
-	"eskip"	=>[5, "evict_skip per second"],
-	"mtxmis"=>[6, "mutex_miss per second"],
-	"rmis"	=>[4, "recycle_miss per second"],
-	"dread"	=>[5, "Demand data accesses per second"],
-	"pread"	=>[5, "Prefetch accesses per second"],
+	"time"		=>[8, "Time"],
+	"hits"		=>[4, "Arc reads per second"],
+	"miss"		=>[4, "Arc misses per second"],
+	"read"		=>[4, "Total Arc accesses per second"],
+	"hit%"		=>[4, "Arc Hit percentage"],
+	"miss%"		=>[5, "Arc miss percentage"],
+	"dhit"		=>[4, "Demand Data hits per second"],
+	"dmis"		=>[4, "Demand Data misses per second"],
+	"dh%"		=>[3, "Demand Data hit percentage"],
+	"dm%"		=>[3, "Demand Data miss percentage"],
+	"phit"		=>[4, "Prefetch hits per second"],
+	"pmis"		=>[4, "Prefetch misses per second"],
+	"ph%"		=>[3, "Prefetch hits percentage"],
+	"pm%"		=>[3, "Prefetch miss percentage"],
+	"mhit"		=>[4, "Metadata hits per second"],
+	"mmis"		=>[4, "Metadata misses per second"],
+	"mread"		=>[5, "Metadata accesses per second"],
+	"mh%"		=>[3, "Metadata hit percentage"],
+	"mm%"		=>[3, "Metadata miss percentage"],
+	"arcsz"		=>[5, "Arc Size"],
+	"c" 		=>[4, "Arc Target Size"],
+	"mfu" 		=>[4, "MFU List hits per second"],
+	"mru" 		=>[4, "MRU List hits per second"],
+	"mfug" 		=>[4, "MFU Ghost List hits per second"],
+	"mrug" 		=>[4, "MRU Ghost List hits per second"],
+	"eskip"		=>[5, "evict_skip per second"],
+	"mtxmis"	=>[6, "mutex_miss per second"],
+	"rmis"		=>[4, "recycle_miss per second"],
+	"dread"		=>[5, "Demand data accesses per second"],
+	"pread"		=>[5, "Prefetch accesses per second"],
 );
 my %v=();
-my @hdr = qw(Time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
-my @xhdr = qw(Time mfu mru mfug mrug eskip mtxmis rmis dread pread read);
+my @hdr = qw(time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
+my @xhdr = qw(time mfu mru mfug mrug eskip mtxmis rmis dread pread read);
 my $int = 1;		# Print stats every 1 second by default
 my $count = 0;		# Print stats forever
 my $hdr_intr = 20;	# Print header every 20 lines of output
@@ -106,7 +106,7 @@ sub usage {
 	print STDERR "\tarcstat -o /tmp/a.log 2 10\n";
 	print STDERR "\tarcstat -s , -o /tmp/a.log 2 10\n";
 	print STDERR "\tarcstat -v\n";
-	print STDERR "\tarcstat -f Time,Hit%,dh%,ph%,mh%\n";
+	print STDERR "\tarcstat -f time,hit%,dh%,ph%,mh%\n";
 	exit(1);
 }
 
@@ -197,31 +197,38 @@ sub print_header {
 
 sub calculate {
 	%v=();
-	$v{"Time"} = strftime("%H:%M:%S", localtime);
+	$v{"time"} = strftime("%H:%M:%S", localtime);
 	$v{"hits"} = $d{"hits"}/$int;
 	$v{"miss"} = $d{"misses"}/$int;
 	$v{"read"} = $v{"hits"} + $v{"miss"};
-	$v{"Hit%"} = 100*$v{"hits"}/$v{"read"} if $v{"read"} > 0;
-	$v{"miss%"} = 100 - $v{"Hit%"} if $v{"read"} > 0;
+	$v{"hit%"} = 100*$v{"hits"}/$v{"read"} if $v{"read"} > 0;
+	$v{"miss%"} = 100 - $v{"hit%"} if $v{"read"} > 0;
 
-	$v{"dhit"} = ($d{"demand_data_hits"} + $d{"demand_metadata_hits"})/$int;
-	$v{"dmis"} = ($d{"demand_data_misses"}+$d{"demand_metadata_misses"})/$int;
+	$v{"dhit"} = ($d{"demand_data_hits"} + 
+		$d{"demand_metadata_hits"})/$int;
+	$v{"dmis"} = ($d{"demand_data_misses"} + 
+		$d{"demand_metadata_misses"})/$int;
+
 	$v{"dread"} = $v{"dhit"} + $v{"dmis"};
-	$v{"dh%"} = 100*$v{"dhit"}/$v{"dread"} if $v{"dread"} > 0;
+	$v{"dh%"} = 100 * $v{"dhit"}/$v{"dread"} if $v{"dread"} > 0;
 	$v{"dm%"} = 100 - $v{"dh%"} if $v{"dread"} > 0;
 
-	$v{"phit"}=($d{"prefetch_data_hits"} + $d{"prefetch_metadata_hits"})/$int;
+	$v{"phit"}=($d{"prefetch_data_hits"} + 
+		$d{"prefetch_metadata_hits"})/$int;
 	$v{"pmis"}=($d{"prefetch_data_misses"}
 		+$d{"prefetch_metadata_misses"})/$int;
+
 	$v{"pread"} = $v{"phit"} + $v{"pmis"};
-	$v{"ph%"} = 100*$v{"phit"}/$v{"pread"} if $v{"pread"} > 0;
+	$v{"ph%"} = 100 * $v{"phit"}/$v{"pread"} if $v{"pread"} > 0;
 	$v{"pm%"} = 100 - $v{"ph%"} if $v{"pread"} > 0;
 
-	$v{"mhit"}=($d{"prefetch_metadata_hits"}+$d{"demand_metadata_hits"})/$int;
+	$v{"mhit"}=($d{"prefetch_metadata_hits"} + 
+		$d{"demand_metadata_hits"})/$int;
 	$v{"mmis"}=($d{"prefetch_metadata_misses"}
 		+$d{"demand_metadata_misses"})/$int;
+
 	$v{"mread"} = $v{"mhit"} + $v{"mmis"};
-	$v{"mh%"} = 100*$v{"mhit"}/$v{"mread"} if $v{"mread"} > 0;
+	$v{"mh%"} = 100 * $v{"mhit"}/$v{"mread"} if $v{"mread"} > 0;
 	$v{"mm%"} = 100 - $v{"mh%"} if $v{"mread"} > 0;
 
 	$v{"arcsz"} = $cur{"size"};
