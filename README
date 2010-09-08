@@ -1,0 +1,70 @@
+arcstat.pl is a Perl script that uses the Sun::Solaris::Kstat module to read
+ZFS ARC kstat values from the system and report on an interval basis. 
+
+Some output examples can be found on the author's blog here:
+http://blogs.sun.com/realneel/entry/zfs_arc_statistics
+
+Examples showing L2ARC data can be found here:
+http://blog.harschsystems.com/<TBD>
+
+Usage for arcstat.pl can be obtained by providing the "--help" flag:
+
+./arcstat.pl --help
+Arcstat version 0.2
+Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]
+         -x : Print extended stats
+         -f : Specify specific fields to print (see -v)
+         -o : Print stats to file
+         -s : Specify a seperator
+
+Examples:
+        arcstat -o /tmp/a.log 2 10
+        arcstat -s , -o /tmp/a.log 2 10
+        arcstat -v
+        arcstat -f time,hit%,dh%,ph%,mh% 
+
+Available fields (statistics) can be retrieved with the "-v" flag:
+
+./arcstat.pl -v
+Arcstat version 0.2
+Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]
+Field definitions are as follows
+ mtxmis : mutex_miss per second
+  arcsz : Arc Size
+   mrug : MRU Ghost List hits per second
+ l2hit% : L2ARC access hit percentage
+    mh% : Metadata hit percentage
+l2miss% : L2ARC access miss percentage
+   read : Total Arc accesses per second
+      c : Arc Target Size
+   mfug : MFU Ghost List hits per second
+   miss : Arc misses per second
+    dm% : Demand Data miss percentage
+   dhit : Demand Data hits per second
+  pread : Prefetch accesses per second
+  dread : Demand data accesses per second
+   pmis : Prefetch misses per second
+ l2miss : L2ARC misses per second
+   time : Time
+l2bytes : bytes read per second from the L2ARC
+    pm% : Prefetch miss percentage
+    mm% : Metadata miss percentage
+   hits : Arc reads per second
+    mfu : MFU List hits per second
+ l2read : Total L2ARC accesses per second
+   mmis : Metadata misses per second
+   rmis : recycle_miss per second
+   mhit : Metadata hits per second
+   dmis : Demand Data misses per second
+    mru : MRU List hits per second
+    ph% : Prefetch hits percentage
+  eskip : evict_skip per second
+ l2size : Size of the L2ARC
+ l2hits : L2ARC hits per second
+   hit% : Arc Hit percentage
+  miss% : Arc miss percentage
+    dh% : Demand Data hit percentage
+  mread : Metadata accesses per second
+   phit : Prefetch hits per second
+
+Note: K=10^3 M=10^6 G=10^9 and so on
