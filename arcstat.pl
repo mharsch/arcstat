@@ -69,6 +69,13 @@ my %cols = (# HDR => [Size, Description]
 	"rmis"		=>[4, "recycle_miss per second"],
 	"dread"		=>[5, "Demand data accesses per second"],
 	"pread"		=>[5, "Prefetch accesses per second"],
+	"l2hits"	=>[6, "L2ARC hits per second"],
+	"l2miss"	=>[6, "L2ARC misses per second"],
+	"l2read"	=>[6, "Total L2ARC accesses per second"],
+	"l2hit%"	=>[6, "L2ARC access hit percentage"],
+	"l2miss%"	=>[7, "L2ARC access miss percentage"],
+	"l2size"	=>[6, "Size of the L2ARC"],
+	"l2bytes"	=>[7, "bytes read per second from the L2ARC"],
 );
 my %v=();
 my @hdr = qw(time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
@@ -78,7 +85,7 @@ my $count = 0;		# Print stats forever
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
-my $version = "0.1";
+my $version = "0.2";
 my $cmd = "Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]\n";
 my %cur;
 my %d;
@@ -240,6 +247,14 @@ sub calculate {
 	$v{"eskip"} = $d{"evict_skip"}/$int;
 	$v{"rmiss"} = $d{"recycle_miss"}/$int;
 	$v{"mtxmis"} = $d{"mutex_miss"}/$int;
+
+	$v{"l2hits"} = $d{"l2_hits"}/$int;
+	$v{"l2miss"} = $d{"l2_misses"}/$int;
+	$v{"l2read"} = $v{"l2hits"} + $v{"l2miss"};
+	$v{"l2hit%"} = 100 * $v{"l2hits"}/$v{"l2read"} if $v{"l2read"} > 0;
+	$v{"l2miss%"} = 100 - $v{"l2hit%"} if $v{"l2read"} > 0;
+	$v{"l2size"} = $cur{"l2_size"};
+	$v{"l2bytes"} = $d{"l2_read_bytes"}/$int;
 }
 
 sub main {
