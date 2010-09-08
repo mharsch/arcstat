@@ -5,7 +5,7 @@ Some output examples can be found on the author's blog here:
 http://blogs.sun.com/realneel/entry/zfs_arc_statistics
 
 Examples showing L2ARC data can be found here:
-http://blog.harschsystems.com/<TBD>
+http://blog.harschsystems.com/tools/arcstat-pl-updated-for-l2arc-statistics/
 
 Usage for arcstat.pl can be obtained by providing the "--help" flag:
 
