@@ -39,7 +39,7 @@ use Getopt::Long;
 use IO::Handle;
 
 my %cols = (# HDR => [Size, Scale, Description]
-	"time"		=>[8, "N/A", "Time"],
+	"time"		=>[8, -1, "Time"],
 	"hits"		=>[4, 1000, "Arc reads per second"],
 	"miss"		=>[4, 1000, "Arc misses per second"],
 	"read"		=>[4, 1000, "Total Arc accesses per second"],
@@ -182,8 +182,12 @@ sub prettynum {
 	my $index = 0;
 	my $save = 0;
 
-	return sprintf("%s", $num) if not $num =~ /^[0-9\.]+$/;
-
+	if ($scale == -1) {			#special case for date field
+		return sprintf("%s", $num);
+	} elsif (($num > 0) && ($num < 1)) {	#rounding error.  return 0
+		$num = 0;
+	} 
+	
 	while ($num > $scale and $index < 5) {
 		$save = $num;
 		$num = $num/$scale;
