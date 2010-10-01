@@ -85,7 +85,8 @@ my $count = 0;		# Print stats forever
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
-my $version = "0.3";
+my $version = "0.4";
+my $l2exist = 0;
 my $cmd = "Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]\n";
 my %cur;
 my %d;
@@ -99,7 +100,6 @@ sub detailed_usage {
 	foreach my $hdr (keys %cols) {
 		print STDERR sprintf("%7s : %s\n", $hdr, $cols{$hdr}[2]);
 	}
-#	print STDERR "\nNote: K=10^3 M=10^6 G=10^9 and so on\n";
 	exit(1);
 
 }
@@ -133,16 +133,35 @@ sub init {
 	usage() if !$res or $hflag or ($xflag and $desired_cols);
 	detailed_usage() if $vflag;
 	@hdr = @xhdr if $xflag;		#reset headers to xhdr
+
+	# check if L2ARC exists
+	snap_stats();
+	if (defined $cur{"l2_size"}) {
+		$l2exist = 1;
+	}
+
 	if ($desired_cols) {
 		@hdr = split(/[ ,]+/, $desired_cols);
 		# Now check if they are valid fields
 		my @invalid = ();
+		my @incompat = ();
 		foreach my $ele (@hdr) {
-			push(@invalid, $ele) if not exists($cols{$ele});
+			if (not exists($cols{$ele})) {
+				push(@invalid, $ele);
+			} elsif (($l2exist == 0) && ($ele =~ /^l2/)) {
+				printf("No L2ARC here\n", $ele);
+				push(@incompat, $ele);
+			}
 		}
 		if (scalar @invalid > 0) {
 			print STDERR "Invalid column definition! -- "
 				. "@invalid\n\n";
+			usage();
+		}
+
+		if (scalar @incompat > 0) {
+			print STDERR "Incompatible field specified -- "
+				. "@incompat\n\n";
 			usage();
 		}
 	}
@@ -151,6 +170,7 @@ sub init {
 		$out->autoflush;
 		select $out;
 	}
+
 }
 
 # Capture kstat statistics. We maintain 3 hashes, prev, cur, and
@@ -263,13 +283,18 @@ sub calculate {
 	$v{"rmiss"} = $d{"recycle_miss"}/$int;
 	$v{"mtxmis"} = $d{"mutex_miss"}/$int;
 
-	$v{"l2hits"} = $d{"l2_hits"}/$int;
-	$v{"l2miss"} = $d{"l2_misses"}/$int;
-	$v{"l2read"} = $v{"l2hits"} + $v{"l2miss"};
-	$v{"l2hit%"} = 100 * $v{"l2hits"}/$v{"l2read"} if $v{"l2read"} > 0;
-	$v{"l2miss%"} = 100 - $v{"l2hit%"} if $v{"l2read"} > 0;
-	$v{"l2size"} = $cur{"l2_size"};
-	$v{"l2bytes"} = $d{"l2_read_bytes"}/$int;
+	if ($l2exist) {
+
+		$v{"l2hits"} = $d{"l2_hits"}/$int;
+		$v{"l2miss"} = $d{"l2_misses"}/$int;
+		$v{"l2read"} = $v{"l2hits"} + $v{"l2miss"};
+		$v{"l2hit%"} = 100 * $v{"l2hits"}/$v{"l2read"} 
+				if $v{"l2read"} > 0;
+
+		$v{"l2miss%"} = 100 - $v{"l2hit%"} if $v{"l2read"} > 0;
+		$v{"l2size"} = $cur{"l2_size"};
+		$v{"l2bytes"} = $d{"l2_read_bytes"}/$int;
+	}
 }
 
 sub main {
