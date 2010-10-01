@@ -67,4 +67,3 @@ l2bytes : bytes read per second from the L2ARC
   mread : Metadata accesses per second
    phit : Prefetch hits per second
 
-Note: K=10^3 M=10^6 G=10^9 and so on
