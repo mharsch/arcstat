@@ -26,7 +26,7 @@ Examples:
 Available fields (statistics) can be retrieved with the "-v" flag:
 
 ./arcstat.pl -v
-Arcstat version 0.2
+Arcstat version 0.3
 Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]
 Field definitions are as follows
  mtxmis : mutex_miss per second
