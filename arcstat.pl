@@ -200,7 +200,8 @@ sub prettynum {
 
 sub print_values {
 	foreach my $col (@hdr) {
-		printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1], 				$v{$col}), $sep);
+		printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1],
+			$v{$col}), $sep);
 	}
 	printf("\n");
 }
