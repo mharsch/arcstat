@@ -2,9 +2,19 @@
 #
 # Print out ZFS ARC Statistics exported via kstat(1)
 # For a definition of fields, or usage, use arctstat.pl -v
+# 
+# This script is a fork of the original arcstat.pl (0.1) by
+# Neelakanth Nadgir, originally published on his Sun blog on
+# 09/18/2007
+#     http://blogs.sun.com/realneel/entry/zfs_arc_statistics
+# 
+# This version aims to improve upon the original by adding features
+# and fixing bugs as needed.  This version is maintained by 
+# Mike Harsch and is hosted in a public open source repository:
+#    http://github.com/mharsch/arcstat
 #
-# Author: Neelakanth Nadgir http://blogs.sun.com/realneel
-# Comments/Questions/Feedback to neel_sun.com or neel_gnu.org
+# Comments, Questions, or Suggetions are always welcome.
+# Contact the maintainer at ( mike at harschsystems dot com )
 #
 # CDDL HEADER START
 # 
