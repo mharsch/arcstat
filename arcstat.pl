@@ -38,44 +38,44 @@ use Sun::Solaris::Kstat;
 use Getopt::Long;
 use IO::Handle;
 
-my %cols = (# HDR => [Size, Description]
-	"time"		=>[8, "Time"],
-	"hits"		=>[4, "Arc reads per second"],
-	"miss"		=>[4, "Arc misses per second"],
-	"read"		=>[4, "Total Arc accesses per second"],
-	"hit%"		=>[4, "Arc Hit percentage"],
-	"miss%"		=>[5, "Arc miss percentage"],
-	"dhit"		=>[4, "Demand Data hits per second"],
-	"dmis"		=>[4, "Demand Data misses per second"],
-	"dh%"		=>[3, "Demand Data hit percentage"],
-	"dm%"		=>[3, "Demand Data miss percentage"],
-	"phit"		=>[4, "Prefetch hits per second"],
-	"pmis"		=>[4, "Prefetch misses per second"],
-	"ph%"		=>[3, "Prefetch hits percentage"],
-	"pm%"		=>[3, "Prefetch miss percentage"],
-	"mhit"		=>[4, "Metadata hits per second"],
-	"mmis"		=>[4, "Metadata misses per second"],
-	"mread"		=>[5, "Metadata accesses per second"],
-	"mh%"		=>[3, "Metadata hit percentage"],
-	"mm%"		=>[3, "Metadata miss percentage"],
-	"arcsz"		=>[5, "Arc Size"],
-	"c" 		=>[4, "Arc Target Size"],
-	"mfu" 		=>[4, "MFU List hits per second"],
-	"mru" 		=>[4, "MRU List hits per second"],
-	"mfug" 		=>[4, "MFU Ghost List hits per second"],
-	"mrug" 		=>[4, "MRU Ghost List hits per second"],
-	"eskip"		=>[5, "evict_skip per second"],
-	"mtxmis"	=>[6, "mutex_miss per second"],
-	"rmis"		=>[4, "recycle_miss per second"],
-	"dread"		=>[5, "Demand data accesses per second"],
-	"pread"		=>[5, "Prefetch accesses per second"],
-	"l2hits"	=>[6, "L2ARC hits per second"],
-	"l2miss"	=>[6, "L2ARC misses per second"],
-	"l2read"	=>[6, "Total L2ARC accesses per second"],
-	"l2hit%"	=>[6, "L2ARC access hit percentage"],
-	"l2miss%"	=>[7, "L2ARC access miss percentage"],
-	"l2size"	=>[6, "Size of the L2ARC"],
-	"l2bytes"	=>[7, "bytes read per second from the L2ARC"],
+my %cols = (# HDR => [Size, Scale, Description]
+	"time"		=>[8, "N/A", "Time"],
+	"hits"		=>[4, 1000, "Arc reads per second"],
+	"miss"		=>[4, 1000, "Arc misses per second"],
+	"read"		=>[4, 1000, "Total Arc accesses per second"],
+	"hit%"		=>[4, 100, "Arc Hit percentage"],
+	"miss%"		=>[5, 100, "Arc miss percentage"],
+	"dhit"		=>[4, 1000, "Demand Data hits per second"],
+	"dmis"		=>[4, 1000, "Demand Data misses per second"],
+	"dh%"		=>[3, 100, "Demand Data hit percentage"],
+	"dm%"		=>[3, 100, "Demand Data miss percentage"],
+	"phit"		=>[4, 1000, "Prefetch hits per second"],
+	"pmis"		=>[4, 1000, "Prefetch misses per second"],
+	"ph%"		=>[3, 100, "Prefetch hits percentage"],
+	"pm%"		=>[3, 100, "Prefetch miss percentage"],
+	"mhit"		=>[4, 1000, "Metadata hits per second"],
+	"mmis"		=>[4, 1000, "Metadata misses per second"],
+	"mread"		=>[4, 1000, "Metadata accesses per second"],
+	"mh%"		=>[3, 100, "Metadata hit percentage"],
+	"mm%"		=>[3, 100, "Metadata miss percentage"],
+	"arcsz"		=>[5, 1024, "Arc Size"],
+	"c" 		=>[4, 1024, "Arc Target Size"],
+	"mfu" 		=>[4, 1000, "MFU List hits per second"],
+	"mru" 		=>[4, 1000, "MRU List hits per second"],
+	"mfug" 		=>[4, 1000, "MFU Ghost List hits per second"],
+	"mrug" 		=>[4, 1000, "MRU Ghost List hits per second"],
+	"eskip"		=>[5, 1000, "evict_skip per second"],
+	"mtxmis"	=>[6, 1000, "mutex_miss per second"],
+	"rmis"		=>[4, 1000, "recycle_miss per second"],
+	"dread"		=>[5, 1000, "Demand data accesses per second"],
+	"pread"		=>[5, 1000, "Prefetch accesses per second"],
+	"l2hits"	=>[6, 1000, "L2ARC hits per second"],
+	"l2miss"	=>[6, 1000, "L2ARC misses per second"],
+	"l2read"	=>[6, 1000, "Total L2ARC accesses per second"],
+	"l2hit%"	=>[6, 100, "L2ARC access hit percentage"],
+	"l2miss%"	=>[7, 100, "L2ARC access miss percentage"],
+	"l2size"	=>[6, 1024, "Size of the L2ARC"],
+	"l2bytes"	=>[7, 1024, "bytes read per second from the L2ARC"],
 );
 my %v=();
 my @hdr = qw(time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
@@ -85,7 +85,7 @@ my $count = 0;		# Print stats forever
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
-my $version = "0.2";
+my $version = "0.3";
 my $cmd = "Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]\n";
 my %cur;
 my %d;
@@ -97,9 +97,9 @@ sub detailed_usage {
 	print STDERR "Arcstat version $version\n$cmd";
 	print STDERR "Field definitions are as follows\n";
 	foreach my $hdr (keys %cols) {
-		print STDERR sprintf("%6s : %s\n", $hdr, $cols{$hdr}[1]);
+		print STDERR sprintf("%7s : %s\n", $hdr, $cols{$hdr}[2]);
 	}
-	print STDERR "\nNote: K=10^3 M=10^6 G=10^9 and so on\n";
+#	print STDERR "\nNote: K=10^3 M=10^6 G=10^9 and so on\n";
 	exit(1);
 
 }
@@ -173,24 +173,34 @@ sub snap_stats {
 	}
 }
 
-# Pretty print num. Arguments are width and num
+# Pretty print num. Arguments are width, scale, and num
 sub prettynum {
-	my @suffix=(' ','K', 'M', 'G', 'T', 'P', 'E', 'Z');
-	my $num = $_[1] || 0;
+	my @suffix=(' ','K', 'M', 'G', 'T');
+	my $num = $_[2] || 0;
+	my $scale = $_[1];
 	my $sz = $_[0];
 	my $index = 0;
+	my $save = 0;
+
 	return sprintf("%s", $num) if not $num =~ /^[0-9\.]+$/;
-	while ($num > 1000 and $index < 8) {
-		$num = $num/1000;
+
+	while ($num > $scale and $index < 5) {
+		$save = $num;
+		$num = $num/$scale;
 		$index++;
 	}
+
 	return sprintf("%*d", $sz, $num) if ($index == 0);
-	return sprintf("%*d%s", $sz - 1, $num,$suffix[$index]);
+	if (($save / $scale) < 10) {
+		return sprintf("%*.1f%s", $sz - 1, $num,$suffix[$index]);
+	} else {
+		return sprintf("%*d%s", $sz - 1, $num,$suffix[$index]);
+	}
 }
 
 sub print_values {
 	foreach my $col (@hdr) {
-		printf("%s%s", prettynum($cols{$col}[0], $v{$col}), $sep);
+		printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1], 				$v{$col}), $sep);
 	}
 	printf("\n");
 }
