@@ -91,7 +91,7 @@ my %v=();
 my @hdr = qw(time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
 my @xhdr = qw(time mfu mru mfug mrug eskip mtxmis rmis dread pread read);
 my $int = 1;		# Print stats every 1 second by default
-my $count = 0;		# Print stats forever
+my $count = 1;		# Print stats since boot and exit by default
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
@@ -294,7 +294,6 @@ sub calculate {
 	$v{"mtxmis"} = $d{"mutex_miss"}/$int;
 
 	if ($l2exist) {
-
 		$v{"l2hits"} = $d{"l2_hits"}/$int;
 		$v{"l2miss"} = $d{"l2_misses"}/$int;
 		$v{"l2read"} = $v{"l2hits"} + $v{"l2miss"};
