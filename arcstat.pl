@@ -13,7 +13,7 @@
 # Mike Harsch and is hosted in a public open source repository:
 #    http://github.com/mharsch/arcstat
 #
-# Comments, Questions, or Suggetions are always welcome.
+# Comments, Questions, or Suggestions are always welcome.
 # Contact the maintainer at ( mike at harschsystems dot com )
 #
 # CDDL HEADER START
@@ -50,11 +50,11 @@ use IO::Handle;
 
 my %cols = (# HDR => [Size, Scale, Description]
 	"time"		=>[8, -1, "Time"],
-	"hits"		=>[4, 1000, "Arc reads per second"],
-	"miss"		=>[4, 1000, "Arc misses per second"],
-	"read"		=>[4, 1000, "Total Arc accesses per second"],
-	"hit%"		=>[4, 100, "Arc Hit percentage"],
-	"miss%"		=>[5, 100, "Arc miss percentage"],
+	"hits"		=>[4, 1000, "ARC reads per second"],
+	"miss"		=>[4, 1000, "ARC misses per second"],
+	"read"		=>[4, 1000, "Total ARC accesses per second"],
+	"hit%"		=>[4, 100, "ARC Hit percentage"],
+	"miss%"		=>[5, 100, "ARC miss percentage"],
 	"dhit"		=>[4, 1000, "Demand Data hits per second"],
 	"dmis"		=>[4, 1000, "Demand Data misses per second"],
 	"dh%"		=>[3, 100, "Demand Data hit percentage"],
@@ -68,8 +68,8 @@ my %cols = (# HDR => [Size, Scale, Description]
 	"mread"		=>[4, 1000, "Metadata accesses per second"],
 	"mh%"		=>[3, 100, "Metadata hit percentage"],
 	"mm%"		=>[3, 100, "Metadata miss percentage"],
-	"arcsz"		=>[5, 1024, "Arc Size"],
-	"c" 		=>[4, 1024, "Arc Target Size"],
+	"arcsz"		=>[5, 1024, "ARC Size"],
+	"c" 		=>[4, 1024, "ARC Target Size"],
 	"mfu" 		=>[4, 1000, "MFU List hits per second"],
 	"mru" 		=>[4, 1000, "MRU List hits per second"],
 	"mfug" 		=>[4, 1000, "MFU Ghost List hits per second"],
@@ -97,7 +97,7 @@ my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
 my $version = "0.4";
 my $l2exist = 0;
-my $cmd = "Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]\n";
+my $cmd = "Usage: arcstat [-hvx] [-f fields] [-o file] [interval [count]]\n";
 my %cur;
 my %d;
 my $out;
@@ -105,18 +105,18 @@ my $kstat = Sun::Solaris::Kstat->new();
 STDOUT->autoflush;
 
 sub detailed_usage {
-	print STDERR "Arcstat version $version\n$cmd";
-	print STDERR "Field definitions are as follows\n";
+	print STDERR "$cmd\n";
+	print STDERR "Field definitions are as follows:\n";
 	foreach my $hdr (keys %cols) {
-		print STDERR sprintf("%7s : %s\n", $hdr, $cols{$hdr}[2]);
+		print STDERR sprintf("%11s : %s\n", $hdr, $cols{$hdr}[2]);
 	}
 	exit(1);
-
 }
 
 sub usage {
-	print STDERR "Arcstat version $version\n$cmd";
+	print STDERR "$cmd\n";
 	print STDERR "\t -x : Print extended stats\n";
+	print STDERR "\t -v : Show field headers and definitions\n";
 	print STDERR "\t -f : Specify specific fields to print (see -v)\n";
 	print STDERR "\t -o : Print stats to file\n";
 	print STDERR "\t -s : Specify a seperator\n\nExamples:\n";
