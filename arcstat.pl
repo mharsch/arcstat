@@ -94,10 +94,11 @@ my $int = 1;		# Default interval is 1 second
 my $count = 1;		# Default count is 1 
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
-my $sep = "  ";		# Default seperator is 2 spaces
+my $sep = "  ";		# Default separator is 2 spaces
 my $version = "0.4";
 my $l2exist = 0;
-my $cmd = "Usage: arcstat [-hvx] [-f fields] [-o file] [interval [count]]\n";
+my $cmd = "Usage: arcstat [-hvx] [-f fields] [-o file] [-s string] " .
+    "[interval [count]]\n";
 my %cur;
 my %d;
 my $out;
@@ -115,15 +116,19 @@ sub detailed_usage {
 
 sub usage {
 	print STDERR "$cmd\n";
+	print STDERR "\t -h : Print this help message\n";
+	print STDERR "\t -v : List all possible field headers " .
+	    "and definitions\n";
 	print STDERR "\t -x : Print extended stats\n";
-	print STDERR "\t -v : Show field headers and definitions\n";
 	print STDERR "\t -f : Specify specific fields to print (see -v)\n";
-	print STDERR "\t -o : Print stats to file\n";
-	print STDERR "\t -s : Specify a seperator\n\nExamples:\n";
+	print STDERR "\t -o : Redirect output to the specified file\n";
+	print STDERR "\t -s : Override default field separator with custom " .
+	    "character or string\n";
+	print STDERR "\nExamples:\n";
 	print STDERR "\tarcstat -o /tmp/a.log 2 10\n";
-	print STDERR "\tarcstat -s , -o /tmp/a.log 2 10\n";
+	print STDERR "\tarcstat -s \",\" -o /tmp/a.log 2 10\n";
 	print STDERR "\tarcstat -v\n";
-	print STDERR "\tarcstat -f time,hit%,dh%,ph%,mh%\n";
+	print STDERR "\tarcstat -f time,hit%,dh%,ph%,mh% 1\n";
 	exit(1);
 }
 
