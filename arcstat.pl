@@ -90,8 +90,8 @@ my %cols = (# HDR => [Size, Scale, Description]
 my %v=();
 my @hdr = qw(time read miss miss% dmis dm% pmis pm% mmis mm% arcsz c);
 my @xhdr = qw(time mfu mru mfug mrug eskip mtxmis rmis dread pread read);
-my $int = 1;		# Print stats every 1 second by default
-my $count = 0;		# Print stats forever
+my $int = 1;		# Default interval is 1 second
+my $count = 1;		# Default count is 1 
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default seperator is 2 spaces
@@ -141,6 +141,15 @@ sub init {
 
 	$int = $ARGV[0] || $int;
 	$count = $ARGV[1] || $count;
+
+	if (defined $ARGV[0] && defined $ARGV[1]) {
+		$int = $ARGV[0];
+		$count = $ARGV[1];
+	} elsif (defined $ARGV[0]) {
+		$int = $ARGV[0];
+		$count = 0;
+	}
+
 	usage() if !$res or $hflag or ($xflag and $desired_cols);
 	detailed_usage() if $vflag;
 	@hdr = @xhdr if $xflag;		#reset headers to xhdr
