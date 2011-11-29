@@ -303,7 +303,7 @@ sub calculate {
 	$v{"mfu"} = $d{"mfu_hits"}/$int;
 	$v{"mru"} = $d{"mru_hits"}/$int;
 	$v{"mrug"} = $d{"mru_ghost_hits"}/$int;
-	$v{"mfug"} = $d{"mru_ghost_hits"}/$int;
+	$v{"mfug"} = $d{"mfu_ghost_hits"}/$int;
 	$v{"eskip"} = $d{"evict_skip"}/$int;
 	$v{"rmiss"} = $d{"recycle_miss"}/$int;
 	$v{"mtxmis"} = $d{"mutex_miss"}/$int;
