@@ -95,6 +95,7 @@ my $count = 1;		# Default count is 1
 my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default separator is 2 spaces
+my $raw_output;
 my $version = "0.4";
 my $l2exist = 0;
 my $cmd = "Usage: arcstat [-hvx] [-f fields] [-o file] [-s string] " .
@@ -142,7 +143,8 @@ sub init {
 	    'help|h|?' => \$hflag,
 	    'v' => \$vflag,
 	    's=s' => \$sep,
-	    'f=s' => \$desired_cols);
+	    'f=s' => \$desired_cols,
+	    'r' => \$raw_output);
 
 	$int = $ARGV[0] || $int;
 	$count = $ARGV[1] || $count;
@@ -249,8 +251,12 @@ sub prettynum {
 
 sub print_values {
 	foreach my $col (@hdr) {
-		printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1],
-			$v{$col}), $sep);
+		if (not $raw_output) {
+			printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1],
+			    $v{$col}), $sep);
+		} else {
+			printf("%s%s", $v{$col} || 0, $sep);
+		}
 	}
 	printf("\n");
 }
