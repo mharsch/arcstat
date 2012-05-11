@@ -98,7 +98,7 @@ my $sep = "  ";		# Default separator is 2 spaces
 my $raw_output;
 my $version = "0.4";
 my $l2exist = 0;
-my $cmd = "Usage: arcstat [-hvx] [-f fields] [-o file] [-s string] " .
+my $cmd = "Usage: arcstat [-hvxr] [-f fields] [-o file] [-s string] " .
     "[interval [count]]\n";
 my %cur;
 my %d;
@@ -121,6 +121,7 @@ sub usage {
 	print STDERR "\t -v : List all possible field headers " .
 	    "and definitions\n";
 	print STDERR "\t -x : Print extended stats\n";
+	print STDERR "\t -r : Raw output mode (values not scaled)\n";
 	print STDERR "\t -f : Specify specific fields to print (see -v)\n";
 	print STDERR "\t -o : Redirect output to the specified file\n";
 	print STDERR "\t -s : Override default field separator with custom " .
