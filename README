@@ -14,7 +14,7 @@ Usage for arcstat.pl can be obtained by providing the "--help" flag:
 
 ./arcstat.pl --help
 Arcstat version 0.4
-Usage: arcstat.pl [-hvx] [-f fields] [-o file] [interval [count]]
+Usage: arcstat.pl [-hvxr] [-f fields] [-o file] [interval [count]]
          -x : Print extended stats
          -r : Raw Output mode (values not scaled)
          -f : Specify specific fields to print (see -v)

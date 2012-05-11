@@ -193,12 +193,12 @@ sub init {
 			usage();
 		}
 	}
+
 	if ($opfile) {
 		open($out, ">$opfile") ||die "Cannot open $opfile for writing";
 		$out->autoflush;
 		select $out;
 	}
-
 }
 
 # Capture kstat statistics. We maintain 3 hashes, prev, cur, and
@@ -256,22 +256,35 @@ sub print_values {
 			printf("%s%s", prettynum($cols{$col}[0], $cols{$col}[1],
 			    $v{$col}), $sep);
 		} else {
-			printf("%s%s", $v{$col} || 0, $sep);
+			printf("%d%s", $v{$col} || 0, $sep);
 		}
 	}
 	printf("\n");
 }
 
 sub print_header {
-	foreach my $col (@hdr) {
-		printf("%*s%s", $cols{$col}[0], $col, $sep);
-	}
+	if (not $raw_output) {
+		foreach my $col (@hdr) {
+			printf("%*s%s", $cols{$col}[0], $col, $sep);
+		}
+	} else {
+		# Don't try to align headers in raw mode
+		foreach my $col (@hdr) {
+			printf("%s%s", $col, $sep);
+		}
+	}	
 	printf("\n");
 }
 
 sub calculate {
 	%v = ();
-	$v{"time"} = strftime("%H:%M:%S", localtime);
+
+	if ($raw_output) {
+		$v{"time"} = strftime("%s", localtime);
+	} else {
+		$v{"time"} = strftime("%H:%M:%S", localtime);
+	}
+
 	$v{"hits"} = $d{"hits"}/$int;
 	$v{"miss"} = $d{"misses"}/$int;
 	$v{"read"} = $v{"hits"} + $v{"miss"};
@@ -340,7 +353,7 @@ sub main {
 		calculate();
 		print_values();
 		last if ($count_flag == 1 && $count-- <= 1);
-		$i = ($i == $hdr_intr) ? 0 : $i+1;
+		$i = (($i == $hdr_intr) && (not $raw_output)) ? 0 : $i+1;
 		sleep($int);
 	}
 	close($out) if defined $out;
