@@ -288,7 +288,7 @@ sub calculate {
 	$v{"hits"} = $d{"hits"}/$int;
 	$v{"miss"} = $d{"misses"}/$int;
 	$v{"read"} = $v{"hits"} + $v{"miss"};
-	$v{"hit%"} = 100*$v{"hits"}/$v{"read"} if $v{"read"} > 0;
+	$v{"hit%"} = 100 * ($v{"hits"} / $v{"read"}) if $v{"read"} > 0;
 	$v{"miss%"} = 100 - $v{"hit%"} if $v{"read"} > 0;
 
 	$v{"dhit"} = ($d{"demand_data_hits"} +
@@ -297,7 +297,7 @@ sub calculate {
 	    $d{"demand_metadata_misses"})/$int;
 
 	$v{"dread"} = $v{"dhit"} + $v{"dmis"};
-	$v{"dh%"} = 100 * $v{"dhit"}/$v{"dread"} if $v{"dread"} > 0;
+	$v{"dh%"} = 100 * ($v{"dhit"} / $v{"dread"}) if $v{"dread"} > 0;
 	$v{"dm%"} = 100 - $v{"dh%"} if $v{"dread"} > 0;
 
 	$v{"phit"} = ($d{"prefetch_data_hits"} +
@@ -306,7 +306,7 @@ sub calculate {
 	    $d{"prefetch_metadata_misses"})/$int;
 
 	$v{"pread"} = $v{"phit"} + $v{"pmis"};
-	$v{"ph%"} = 100 * $v{"phit"}/$v{"pread"} if $v{"pread"} > 0;
+	$v{"ph%"} = 100 * ($v{"phit"} / $v{"pread"}) if $v{"pread"} > 0;
 	$v{"pm%"} = 100 - $v{"ph%"} if $v{"pread"} > 0;
 
 	$v{"mhit"} = ($d{"prefetch_metadata_hits"} +
@@ -315,7 +315,7 @@ sub calculate {
 	    $d{"demand_metadata_misses"})/$int;
 
 	$v{"mread"} = $v{"mhit"} + $v{"mmis"};
-	$v{"mh%"} = 100 * $v{"mhit"}/$v{"mread"} if $v{"mread"} > 0;
+	$v{"mh%"} = 100 * ($v{"mhit"} / $v{"mread"}) if $v{"mread"} > 0;
 	$v{"mm%"} = 100 - $v{"mh%"} if $v{"mread"} > 0;
 
 	$v{"arcsz"} = $cur{"size"};
@@ -332,7 +332,7 @@ sub calculate {
 		$v{"l2hits"} = $d{"l2_hits"}/$int;
 		$v{"l2miss"} = $d{"l2_misses"}/$int;
 		$v{"l2read"} = $v{"l2hits"} + $v{"l2miss"};
-		$v{"l2hit%"} = 100 * $v{"l2hits"}/$v{"l2read"} 
+		$v{"l2hit%"} = 100 * ($v{"l2hits"} / $v{"l2read"}) 
 		    if $v{"l2read"} > 0;
 
 		$v{"l2miss%"} = 100 - $v{"l2hit%"} if $v{"l2read"} > 0;
