@@ -1,4 +1,4 @@
-#!/usr/perl5/bin/perl -w
+#!/usr/bin/env perl
 #
 # Print out ZFS ARC Statistics exported via kstat(1)
 # For a definition of fields, or usage, use arctstat.pl -v
@@ -43,6 +43,7 @@
 # just iterate over this array and print the values using our pretty printer.
 
 use strict;
+use warnings;
 use POSIX qw(strftime);
 use Sun::Solaris::Kstat;
 use Getopt::Long;
