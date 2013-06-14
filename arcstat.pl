@@ -1,4 +1,7 @@
 #!/usr/bin/env perl
+##!/usr/perl5/bin/perl -w
+# The above invocation line was changed in 0.5 to allow for
+# interoperability with linux.
 #
 # Print out ZFS ARC Statistics exported via kstat(1)
 # For a definition of fields, or usage, use arctstat.pl -v
@@ -97,7 +100,7 @@ my $hdr_intr = 20;	# Print header every 20 lines of output
 my $opfile = "";
 my $sep = "  ";		# Default separator is 2 spaces
 my $raw_output;
-my $version = "0.4";
+my $version = "0.5";
 my $l2exist = 0;
 my $cmd = "Usage: arcstat [-hvxr] [-f fields] [-o file] [-s string] " .
     "[interval [count]]\n";

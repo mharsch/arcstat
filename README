@@ -13,7 +13,6 @@ the L2ARC (i.e. nevada-based releases).
 Usage for arcstat.pl can be obtained by providing the "--help" flag:
 
 ./arcstat.pl --help
-Arcstat version 0.4
 Usage: arcstat.pl [-hvxr] [-f fields] [-o file] [interval [count]]
          -x : Print extended stats
          -r : Raw Output mode (values not scaled)
@@ -30,7 +29,6 @@ Examples:
 Available fields (statistics) can be retrieved with the "-v" flag:
 
 ./arcstat.pl -v
-Arcstat version 0.4
 Usage: arcstat.pl [-hvxr] [-f fields] [-o file] [interval [count]]
 Field definitions are as follows
  mtxmis : mutex_miss per second
