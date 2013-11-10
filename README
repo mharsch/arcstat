@@ -2,7 +2,7 @@ arcstat.pl is a Perl script that uses the Sun::Solaris::Kstat module to read
 ZFS ARC kstat values from the system and report on an interval basis. 
 
 Some output examples can be found on the author's blog here:
-http://blogs.sun.com/realneel/entry/zfs_arc_statistics
+http://blogs.oracle.com/realneel/entry/zfs_arc_statistics
 
 Examples showing L2ARC data can be found here:
 http://blog.harschsystems.com/tools/arcstat-pl-updated-for-l2arc-statistics/
