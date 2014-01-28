@@ -151,9 +151,6 @@ sub init {
 	    'f=s' => \$desired_cols,
 	    'r' => \$raw_output);
 
-	$int = $ARGV[0] || $int;
-	$count = $ARGV[1] || $count;
-
 	if (defined $ARGV[0] && defined $ARGV[1]) {
 		$int = $ARGV[0];
 		$count = $ARGV[1];
