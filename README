@@ -38,6 +38,7 @@ Field definitions are as follows
     mh% : Metadata hit percentage
 l2miss% : L2ARC access miss percentage
    read : Total Arc accesses per second
+l2asize : Actual (compressed) size of the L2ARC
       c : Arc Target Size
    mfug : MFU Ghost List hits per second
    miss : Arc misses per second
