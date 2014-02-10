@@ -339,6 +339,7 @@ sub calculate {
 
 		$v{"l2miss%"} = 100 - $v{"l2hit%"} if $v{"l2read"} > 0;
 		$v{"l2size"} = $cur{"l2_size"};
+		$v{"l2asize"} = $cur{"l2_asize"};
 		$v{"l2bytes"} = $d{"l2_read_bytes"}/$int;
 	}
 }
